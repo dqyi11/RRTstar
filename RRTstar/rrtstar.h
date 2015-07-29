@@ -1,9 +1,10 @@
 #ifndef RRTSTAR_H
 #define RRTSTAR_H
 
-#include "KDTree2D.h"
 #include <vector>
 #include <list>
+
+#include "KDTree2D.h"
 
 typedef double (*COST_FUNC_PTR)(POS2D, POS2D, double**, int*);
 
@@ -78,14 +79,13 @@ protected:
     void _attach_new_node( RRTNode* p_node_new, RRTNode* p_nearest_node, std::list<RRTNode*> near_nodes );
     void _rewire_near_nodes( RRTNode* p_node_new, std::list<RRTNode*> near_nodes );
     void _update_cost_to_children( RRTNode* p_node, double delta_cost );
-    bool _get_closet_to_goal( RRTNode* p_node_closet_to_goal, double& delta_cost );
+    bool _get_closet_to_goal( RRTNode*& p_node_closet_to_goal, double& delta_cost );
 
     RRTNode* _find_ancestor( RRTNode* p_node );
 
 private:
     POS2D _start;
     POS2D _goal;
-
     RRTNode * _p_root;
 
     int _sampling_width;

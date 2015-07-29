@@ -473,7 +473,7 @@ void RRTstar::_update_cost_to_children( RRTNode* p_node, double delta_cost ) {
     }
 }
 
-bool RRTstar::_get_closet_to_goal( RRTNode* p_node_closet_to_goal, double& delta_cost ) {
+bool RRTstar::_get_closet_to_goal( RRTNode*& p_node_closet_to_goal, double& delta_cost ) {
     bool found = false;
 
     std::list<KDNode2D> near_nodes = _find_near( _goal );

@@ -6,15 +6,17 @@
 
 #include "path_planning_info.h"
 
-PathPlanningInfo::PathPlanningInfo()
-{
+PathPlanningInfo::PathPlanningInfo() {
     m_info_filename = "";
     m_map_filename = "";
+    m_map_fullpath = "";
     m_objective_file = "";
     m_start.setX(-1);
     m_start.setY(-1);
     m_goal.setX(-1);
     m_goal.setY(-1);
+
+    mp_found_path = NULL;
 
     m_min_dist_enabled = false;
 
@@ -23,26 +25,21 @@ PathPlanningInfo::PathPlanningInfo()
 
     m_map_width = 0;
     m_map_height = 0;
-
 }
 
-bool PathPlanningInfo::get_obstacle_info( int** pp_obstacle_info )
-{
-    if(pp_obstacle_info==NULL)
-    {
+bool PathPlanningInfo::get_obstacle_info( int** pp_obstacle_info ) {
+    if( pp_obstacle_info==NULL ) {
         return false;
     }
-    return get_pix_info( m_map_filename, pp_obstacle_info );
+    return get_pix_info( m_map_fullpath, pp_obstacle_info );
 }
 
-bool PathPlanningInfo::get_cost_distribution( double** pp_cost_distribution )
-{
+bool PathPlanningInfo::get_cost_distribution( double** pp_cost_distribution ) {
     return get_pix_info( m_objective_file, pp_cost_distribution );
 }
 
-bool PathPlanningInfo::get_pix_info( QString filename, double** pp_pix_info )
-{
-    if(pp_pix_info==NULL) {
+bool PathPlanningInfo::get_pix_info( QString filename, double** pp_pix_info ) {
+    if( pp_pix_info==NULL ) {
         return false;
     }
     QPixmap map(filename);
@@ -64,8 +61,7 @@ bool PathPlanningInfo::get_pix_info( QString filename, double** pp_pix_info )
 }
 
 bool PathPlanningInfo::get_pix_info(QString filename, int ** pp_pix_info) {
-    if(pp_pix_info==NULL)
-    {
+    if( pp_pix_info==NULL ) {
         return false;
     }
     QPixmap map(filename);
@@ -87,8 +83,7 @@ bool PathPlanningInfo::get_pix_info(QString filename, int ** pp_pix_info) {
 }
 
 
-void PathPlanningInfo::init_func_param()
-{
+void PathPlanningInfo::init_func_param() {
     if( m_min_dist_enabled == true ) {
         mp_func = PathPlanningInfo::calc_dist;
         mCostDistribution = NULL;
@@ -136,7 +131,7 @@ void PathPlanningInfo::write(QJsonObject &json) const {
 bool PathPlanningInfo::save_to_file(QString filename) {
     QFile saveFile(filename);
 
-    if(false==saveFile.open(QIODevice::WriteOnly)) {
+    if( false==saveFile.open(QIODevice::WriteOnly) ) {
         qWarning("Couldn't open file.");
         return false;
     }
@@ -151,7 +146,7 @@ bool PathPlanningInfo::save_to_file(QString filename) {
 bool PathPlanningInfo::load_from_file(QString filename) {
     QFile load_file(filename);
 
-    if(false==load_file.open(QIODevice::ReadOnly)) {
+    if( false==load_file.open(QIODevice::ReadOnly) ) {
         qWarning("Couldn't open file.");
         return false;
     }
