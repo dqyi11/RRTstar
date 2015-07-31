@@ -92,14 +92,21 @@ void MainWindow::onOpen()
     QString tempFilename = QFileDialog::getOpenFileName(this,
              tr("Open File"), "./", tr("Json Files (*.json)"));
 
+    if(setupPlanning(tempFilename)) {
+        repaint();
+    }
+}
+
+bool MainWindow::setupPlanning(QString filename) {
     if(mpViz) {
-        mpViz->m_PPInfo.load_from_file(tempFilename);
+        mpViz->m_PPInfo.load_from_file(filename);
         openMap(mpViz->m_PPInfo.m_map_fullpath);
         if(mpConfigObjDialog) {
             mpConfigObjDialog->updateDisplay();
         }
-        repaint();
+        return true;
     }
+    return false;
 }
 
 void MainWindow::onSave() {
@@ -112,10 +119,20 @@ void MainWindow::onSave() {
 
 void MainWindow::onExport() {
     QString pathFilename = QFileDialog::getSaveFileName(this, tr("Save File"), "./", tr("Txt Files (*.txt)"));
-
-    if(mpViz) {
-        mpViz->m_PPInfo.export_path(pathFilename);
+    if (pathFilename != "") {
+        mpViz->m_PPInfo.m_paths_output = pathFilename;
+        exportPaths();
     }
+}
+
+bool MainWindow::exportPaths() {
+    if(mpViz) {
+        bool success = false;
+        success = mpViz->m_PPInfo.export_path(mpViz->m_PPInfo.m_paths_output);
+        success = mpViz->drawPath(mpViz->m_PPInfo.m_paths_output+".png");
+        return success;
+    }
+    return false;
 }
 
 void MainWindow::onLoadMap() {
@@ -172,9 +189,20 @@ void MainWindow::onRun() {
         msgBox.exec();
         return;
     }
+
+    planPath();
+    repaint();
+}
+
+void MainWindow::planPath()
+{
     if(mpRRTstar) {
         delete mpRRTstar;
         mpRRTstar = NULL;
+    }
+    if(mpViz->m_PPInfo.mp_found_path) {
+        delete mpViz->m_PPInfo.mp_found_path;
+        mpViz->m_PPInfo.mp_found_path = NULL;
     }
 
     mpViz->m_PPInfo.init_func_param();
@@ -205,7 +233,6 @@ void MainWindow::onRun() {
 
     Path* path = mpRRTstar->find_path();
     mpViz->m_PPInfo.load_path(path);
-    repaint();
 }
 
 void MainWindow::onAddStart() {

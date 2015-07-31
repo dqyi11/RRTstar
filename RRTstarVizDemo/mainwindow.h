@@ -20,17 +20,20 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    bool exportPaths();
+    void planPath();
+    bool setupPlanning(QString filename);
     RRTstarViz * mpViz;
 
 protected:
     void createMenuBar();
     void createActions();
     bool openMap(QString filename);
-
     void updateStatus();
-private:
 
+private:
     void updateTitle();
+
 
     QMenu*   mpFileMenu;
     QAction* mpOpenAction;
@@ -50,8 +53,7 @@ private:
     QProgressBar* mpStatusProgressBar;
 
     QPixmap* mpMap;
-
-    QPoint mCursorPoint;
+    QPoint   mCursorPoint;
 
     ConfigObjDialog* mpConfigObjDialog;
     RRTstar*         mpRRTstar;

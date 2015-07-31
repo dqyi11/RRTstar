@@ -68,3 +68,39 @@ void RRTstarViz::paintEvent( QPaintEvent * e ) {
         painter.drawPoint(m_PPInfo.m_goal);
     }
 }
+
+bool RRTstarViz::drawPath(QString filename) {
+
+    QPixmap pix(m_PPInfo.m_map_fullpath);
+
+    std::cout << "DUMP PATH IMG " << pix.width() << " " << pix.height() << std::endl;
+
+    QFile file(filename);
+    if(file.open(QIODevice::WriteOnly)) {
+        if(m_PPInfo.mp_found_path) {
+            drawPathOnMap(pix);
+        }
+        pix.save(&file, "PNG");
+        return true;
+    }
+    return false;
+}
+
+void RRTstarViz::drawPathOnMap(QPixmap& map) {
+
+    Path * p = m_PPInfo.mp_found_path;
+    QPainter painter(&map);
+    QPen paintpen(QColor(255,140,0));
+    paintpen.setWidth(2);
+    painter.setPen(paintpen);
+
+    int point_num = p->m_way_points.size();
+
+    if(point_num > 0) {
+        for(int i=0;i<point_num-1;i++) {
+            painter.drawLine(QPoint(p->m_way_points[i][0], p->m_way_points[i][1]), QPoint(p->m_way_points[i+1][0], p->m_way_points[i+1][1]));
+        }
+    }
+    painter.end();
+
+}

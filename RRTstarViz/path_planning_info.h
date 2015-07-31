@@ -15,11 +15,11 @@ class PathPlanningInfo {
 public:
     PathPlanningInfo();
 
-    bool get_obstacle_info( int** pp_obstacle_info );
-    bool get_cost_distribution( double** pp_cost_distribution );
+    bool get_obstacle_info( int**& pp_obstacle_info );
+    bool get_cost_distribution( double**& pp_cost_distribution );
 
-    bool get_pix_info( QString filename, double** pp_pix_info );
-    bool get_pix_info( QString filename, int** pp_pix_info );
+    bool get_pix_info( QString filename, double**& pp_pix_info );
+    bool get_pix_info( QString filename, int**& pp_pix_info );
     void init_func_param();
 
     bool save_to_file( QString filename );
@@ -29,7 +29,7 @@ public:
     void write( QJsonObject &json ) const;
 
     void load_path( Path* path );
-    void export_path( QString filename );
+    bool export_path( QString filename );
 
     static double calc_dist( POS2D pos_a, POS2D pos_b, double** pp_distribution, int* p_dimension ) {
         double dist = 0.0;
@@ -128,6 +128,7 @@ public:
     QPoint m_start;
     QPoint m_goal;
 
+    QString m_paths_output;
     bool m_min_dist_enabled;
     QString m_objective_file;
 

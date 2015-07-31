@@ -15,10 +15,9 @@ public:
 
     bool operator==( const RRTNode &other );
 
-    double m_cost;
-    RRTNode * mp_parent;
-    POS2D m_pos;
-
+    double   m_cost;
+    RRTNode* mp_parent;
+    POS2D    m_pos;
     std::list<RRTNode*> m_child_nodes;
 };
 
@@ -29,8 +28,8 @@ public:
     ~Path();
 
     double m_cost;
-    POS2D m_start;
-    POS2D m_goal;
+    POS2D  m_start;
+    POS2D  m_goal;
     std::vector<POS2D> m_way_points;
 };
 
@@ -50,7 +49,7 @@ public:
 
     std::list<RRTNode*>& get_nodes() { return _nodes; }
 
-    int** get_map_info() { return _pp_map_info; }
+    int**& get_map_info() { return _pp_map_info; }
     double get_ball_radius() { return _ball_radius; }
 
     void extend();
@@ -84,28 +83,28 @@ protected:
     RRTNode* _find_ancestor( RRTNode* p_node );
 
 private:
-    POS2D _start;
-    POS2D _goal;
-    RRTNode * _p_root;
+    POS2D    _start;
+    POS2D    _goal;
+    RRTNode* _p_root;
 
     int _sampling_width;
     int _sampling_height;
 
-    int ** _pp_map_info;
+    int** _pp_map_info;
 
-    KDTree2D * _p_kd_tree;
+    KDTree2D*     _p_kd_tree;
     COST_FUNC_PTR _p_cost_func;
-    double** _pp_cost_distribution;
+    double**      _pp_cost_distribution;
 
     std::list<RRTNode*> _nodes;
 
     double _range;
     double _ball_radius;
     double _segment_length;
-    int _obs_check_resolution;
+    int    _obs_check_resolution;
 
     double _theta;
-    int _current_iteration;
+    int    _current_iteration;
 };
 
 inline RRTNode* get_ancestor( RRTNode * node ) {

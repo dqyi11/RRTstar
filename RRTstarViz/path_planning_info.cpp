@@ -16,29 +16,31 @@ PathPlanningInfo::PathPlanningInfo() {
     m_goal.setX(-1);
     m_goal.setY(-1);
 
+    m_paths_output = "";
     mp_found_path = NULL;
 
     m_min_dist_enabled = false;
 
     m_max_iteration_num = 100;
     m_segment_length = 5.0;
+    mCostDistribution = NULL;
 
     m_map_width = 0;
     m_map_height = 0;
 }
 
-bool PathPlanningInfo::get_obstacle_info( int** pp_obstacle_info ) {
+bool PathPlanningInfo::get_obstacle_info( int**& pp_obstacle_info ) {
     if( pp_obstacle_info==NULL ) {
         return false;
     }
     return get_pix_info( m_map_fullpath, pp_obstacle_info );
 }
 
-bool PathPlanningInfo::get_cost_distribution( double** pp_cost_distribution ) {
+bool PathPlanningInfo::get_cost_distribution( double**& pp_cost_distribution ) {
     return get_pix_info( m_objective_file, pp_cost_distribution );
 }
 
-bool PathPlanningInfo::get_pix_info( QString filename, double** pp_pix_info ) {
+bool PathPlanningInfo::get_pix_info( QString filename, double**& pp_pix_info ) {
     if( pp_pix_info==NULL ) {
         return false;
     }
@@ -60,7 +62,7 @@ bool PathPlanningInfo::get_pix_info( QString filename, double** pp_pix_info ) {
     return true;
 }
 
-bool PathPlanningInfo::get_pix_info(QString filename, int ** pp_pix_info) {
+bool PathPlanningInfo::get_pix_info(QString filename, int **& pp_pix_info) {
     if( pp_pix_info==NULL ) {
         return false;
     }
@@ -90,12 +92,20 @@ void PathPlanningInfo::init_func_param() {
     }
     else {
         mp_func = PathPlanningInfo::calc_cost;
+        if(mCostDistribution) {
+            delete[] mCostDistribution;
+            mCostDistribution = NULL;
+        }
+        mCostDistribution = new double*[m_map_width];
+        for(int i=0;i<m_map_width;i++) {
+            mCostDistribution[i] = new double[m_map_height];
+        }
         get_cost_distribution( mCostDistribution );
     }
 }
 
 void PathPlanningInfo::read( const QJsonObject &json ) {
-    m_info_filename;
+    //m_info_filename;
     m_map_filename = json["mapFilename"].toString();
     m_map_fullpath = json["mapFullpath"].toString();
     m_map_width = json["mapWidth"].toInt();
@@ -105,6 +115,7 @@ void PathPlanningInfo::read( const QJsonObject &json ) {
 
     m_min_dist_enabled = json["minDistEnabled"].toBool();
     m_objective_file = json["objectiveFile"].toString();
+    m_paths_output = json["pathOutputFile"].toString();
 
     m_max_iteration_num = json["maxIterationNum"].toInt();
     m_segment_length = json["segmentLength"].toDouble();
@@ -113,19 +124,20 @@ void PathPlanningInfo::read( const QJsonObject &json ) {
 void PathPlanningInfo::write(QJsonObject &json) const {
     json["mapFilename"] = m_map_filename;
     json["mapFullpath"] = m_map_fullpath;
-    json["mapWidth"] = m_map_width;
-    json["mapHeight"] = m_map_height;
+    json["mapWidth"]    = m_map_width;
+    json["mapHeight"]   = m_map_height;
 
     json["startX"] = m_start.x();
     json["startY"] = m_start.y();
-    json["goalX"] = m_goal.x();
-    json["goalY"] = m_goal.y();
+    json["goalX"]  = m_goal.x();
+    json["goalY"]  = m_goal.y();
 
     json["minDistEnabled"] = m_min_dist_enabled;
-    json["objectiveFile"] = m_objective_file;
+    json["objectiveFile"]  = m_objective_file;
+    json["pathOutputFile"] = m_paths_output;
 
     json["maxIterationNum"] = m_max_iteration_num;
-    json["segmentLength"] = m_segment_length;
+    json["segmentLength"]   = m_segment_length;
 }
 
 bool PathPlanningInfo::save_to_file(QString filename) {
@@ -161,7 +173,7 @@ void PathPlanningInfo::load_path(Path* path) {
     mp_found_path = path;
 }
 
-void PathPlanningInfo::export_path(QString filename) {
+bool PathPlanningInfo::export_path(QString filename) {
     QFile file(filename);
     if( file.open(QIODevice::ReadWrite) ) {
         QTextStream stream( & file );
@@ -175,5 +187,7 @@ void PathPlanningInfo::export_path(QString filename) {
             }
             stream << "\n";
         }
+        return true;
     }
+    return false;
 }
