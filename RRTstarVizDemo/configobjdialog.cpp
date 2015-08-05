@@ -5,10 +5,6 @@
 #include <QMessageBox>
 #include <QFileDialog>
 
-#define WEIGHTED_SUM_STR           "Weighted-sum"
-#define TCHEBYCHEFF_STR           "Tchebycheff"
-#define BOUNDARY_INTERSECTION_STR "Boundary-intersection"
-
 ConfigObjDialog::ConfigObjDialog(MainWindow * parent) {
     mpParentWindow = parent;
 
@@ -86,6 +82,7 @@ void ConfigObjDialog::onBtnAddClicked() {
        if(true==isCompatible(objFilename)) {
            if(mpParentWindow->mpViz) {
                mpParentWindow->mpViz->m_PPInfo.m_objective_file = objFilename;
+               updateDisplay();
                repaint();
            }
        }

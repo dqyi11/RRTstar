@@ -83,10 +83,8 @@ RRTNode* RRTstar::init( POS2D start, POS2D goal, COST_FUNC_PTR p_func, double** 
 }
 
 void RRTstar::load_map( int** pp_map ) {
-    for(int i=0;i<_sampling_width;i++)
-    {
-        for(int j=0;j<_sampling_height;j++)
-        {
+    for(int i=0;i<_sampling_width;i++) {
+        for(int j=0;j<_sampling_height;j++) {
             _pp_map_info[i][j] = pp_map[i][j];
         }
     }
@@ -95,10 +93,10 @@ void RRTstar::load_map( int** pp_map ) {
 POS2D RRTstar::_sampling() {
     double x = rand();
     double y = rand();
-    x = x * ((double)(_sampling_width)/RAND_MAX);
-    y = y * ((double)(_sampling_height)/RAND_MAX);
+    int int_x = x * ((double)(_sampling_width)/RAND_MAX);
+    int int_y = y * ((double)(_sampling_height)/RAND_MAX);
 
-    POS2D m(x,y);
+    POS2D m(int_x,int_y);
     return m;
 }
 
@@ -136,6 +134,11 @@ bool RRTstar::_is_obstacle_free( POS2D pos_a, POS2D pos_b ) {
     }
     int x_dist = pos_a[0] - pos_b[0];
     int y_dist = pos_a[1] - pos_b[1];
+
+    if( x_dist == 0 && y_dist == 0) {
+        return true;
+    }
+
     if ( fabs( x_dist ) > fabs( y_dist ) ) {
         double k = (double)y_dist/ x_dist;
         int start_x = 0, end_x = 0, start_y = 0;
@@ -156,6 +159,7 @@ bool RRTstar::_is_obstacle_free( POS2D pos_a, POS2D pos_b ) {
                 return false;
             }
         }
+
     }
     else {
         double k = (double)x_dist/ y_dist;
@@ -186,6 +190,10 @@ void RRTstar::extend() {
     while( false==node_inserted ) {
         POS2D rnd_pos = _sampling();
         KDNode2D nearest_node = _find_nearest( rnd_pos );
+
+        if (rnd_pos[0]==nearest_node[0] && rnd_pos[1]==nearest_node[1]) {
+            continue;
+        }
 
         POS2D new_pos = _steer( rnd_pos, nearest_node );
 
