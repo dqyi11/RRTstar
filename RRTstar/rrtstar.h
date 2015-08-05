@@ -55,6 +55,8 @@ public:
     void extend();
     Path* find_path();
 
+    void dump_distribution(std::string filename);
+
 protected:
     POS2D _sampling();
     POS2D _steer( POS2D pos_a, POS2D pos_b );

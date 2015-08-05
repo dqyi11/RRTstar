@@ -220,6 +220,8 @@ void MainWindow::planPath()
     mpViz->m_PPInfo.get_obstacle_info(mpRRTstar->get_map_info());
     mpViz->setTree(mpRRTstar);
 
+    mpRRTstar->dump_distribution("dist.txt");
+
     while(mpRRTstar->get_current_iteration() <= mpViz->m_PPInfo.m_max_iteration_num) {
         QString msg = "CurrentIteration " + QString::number(mpRRTstar->get_current_iteration()) + " ";
         msg += QString::number(mpRRTstar->get_ball_radius());

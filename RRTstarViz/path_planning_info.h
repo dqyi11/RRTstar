@@ -22,6 +22,8 @@ public:
     bool get_pix_info( QString filename, int** pp_pix_info );
     void init_func_param();
 
+    void dump_cost_distribution( QString filename );
+
     bool save_to_file( QString filename );
     bool load_from_file( QString filename );
 
@@ -84,7 +86,7 @@ public:
                 if( fitness_val < 0 ) {
                     qWarning() << "Cost negative " << fitness_val;
                 }
-                cost += fitness_val/255.0;
+                cost += fitness_val;
             }
         }
         else {
@@ -111,7 +113,7 @@ public:
                 if( fitness_val < 0 ) {
                     qWarning() << "Cost negative " << fitness_val;
                 }
-                cost += fitness_val/255.0;
+                cost += fitness_val;
             }
         }
 

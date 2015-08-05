@@ -191,3 +191,19 @@ bool PathPlanningInfo::export_path(QString filename) {
     }
     return false;
 }
+
+void PathPlanningInfo::dump_cost_distribution( QString filename ) {
+    QFile file(filename);
+    if( file.open(QIODevice::ReadWrite) ) {
+        QTextStream stream( & file );
+
+        if( mCostDistribution ) {
+            for(int i=0;i<m_map_width;i++) {
+                for(int j=0;j<m_map_height;j++) {
+                    stream << mCostDistribution[i][j] << " ";
+                }
+                stream << "\n";
+            }
+        }
+    }
+}

@@ -1,4 +1,6 @@
 #include <limits>
+#include <iostream>
+#include <fstream>
 
 #include "rrtstar.h"
 
@@ -42,11 +44,13 @@ RRTstar::RRTstar( int width, int height, int segment_length ) {
     _theta = 5;
 
     _pp_map_info = new int*[_sampling_width];
+    _pp_cost_distribution = new double*[_sampling_width];
     for(int i=0;i<_sampling_width;i++) {
         _pp_map_info[i] = new int[_sampling_height];
-        for(int j=0;j<_sampling_height;j++)
-        {
+        _pp_cost_distribution[i] = new double[_sampling_height];
+        for(int j=0;j<_sampling_height;j++) {
             _pp_map_info[i][j] = 255;
+            _pp_cost_distribution[i][j] = 0.0;
         }
     }
 
@@ -68,7 +72,12 @@ RRTNode* RRTstar::init( POS2D start, POS2D goal, COST_FUNC_PTR p_func, double** 
     _start = start;
     _goal = goal;
     _p_cost_func = p_func;
-    _pp_cost_distribution = pp_cost_distribution;
+
+    for(int i=0;i<_sampling_width;i++) {
+        for(int j=0;j<_sampling_height;j++) {
+            _pp_cost_distribution[i][j] = pp_cost_distribution[i][j];
+        }
+    }
 
     KDNode2D root( start );
 
@@ -503,3 +512,16 @@ bool RRTstar::_get_closet_to_goal( RRTNode*& p_node_closet_to_goal, double& delt
     return found;
 }
 
+void RRTstar::dump_distribution(std::string filename) {
+    std::ofstream myfile;
+    myfile.open (filename.c_str());
+    if(_pp_cost_distribution) {
+        for(int i=0;i<_sampling_width;i++) {
+            for(int j=0;j<_sampling_height;j++) {
+                myfile << _pp_cost_distribution[i][j] << " ";
+            }
+            myfile << "\n";
+        }
+    }
+    myfile.close();
+}
