@@ -29,18 +29,18 @@ PathPlanningInfo::PathPlanningInfo() {
     m_map_height = 0;
 }
 
-bool PathPlanningInfo::get_obstacle_info( int**& pp_obstacle_info ) {
+bool PathPlanningInfo::get_obstacle_info( int** pp_obstacle_info ) {
     if( pp_obstacle_info==NULL ) {
         return false;
     }
     return get_pix_info( m_map_fullpath, pp_obstacle_info );
 }
 
-bool PathPlanningInfo::get_cost_distribution( double**& pp_cost_distribution ) {
+bool PathPlanningInfo::get_cost_distribution( double** pp_cost_distribution ) {
     return get_pix_info( m_objective_file, pp_cost_distribution );
 }
 
-bool PathPlanningInfo::get_pix_info( QString filename, double**& pp_pix_info ) {
+bool PathPlanningInfo::get_pix_info( QString filename, double** pp_pix_info ) {
     if( pp_pix_info==NULL ) {
         return false;
     }
@@ -62,7 +62,7 @@ bool PathPlanningInfo::get_pix_info( QString filename, double**& pp_pix_info ) {
     return true;
 }
 
-bool PathPlanningInfo::get_pix_info(QString filename, int **& pp_pix_info) {
+bool PathPlanningInfo::get_pix_info(QString filename, int ** pp_pix_info) {
     if( pp_pix_info==NULL ) {
         return false;
     }

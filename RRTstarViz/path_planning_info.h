@@ -15,11 +15,11 @@ class PathPlanningInfo {
 public:
     PathPlanningInfo();
 
-    bool get_obstacle_info( int**& pp_obstacle_info );
-    bool get_cost_distribution( double**& pp_cost_distribution );
+    bool get_obstacle_info( int** pp_obstacle_info );
+    bool get_cost_distribution( double** pp_cost_distribution );
 
-    bool get_pix_info( QString filename, double**& pp_pix_info );
-    bool get_pix_info( QString filename, int**& pp_pix_info );
+    bool get_pix_info( QString filename, double** pp_pix_info );
+    bool get_pix_info( QString filename, int** pp_pix_info );
     void init_func_param();
 
     bool save_to_file( QString filename );
@@ -39,7 +39,7 @@ public:
         double delta_x = fabs(pos_a[0]-pos_b[0]);
         double delta_y = fabs(pos_a[1]-pos_b[1]);
         dist = sqrt(delta_x*delta_x+delta_y*delta_y);
-        //dist = (delta_x*delta_x+delta_y*delta_y);
+
         if(dist < 0.0) {
             qWarning() << "Dist negative " << dist ;
         }
