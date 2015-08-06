@@ -6,7 +6,7 @@
 
 #include "KDTree2D.h"
 
-typedef double (*COST_FUNC_PTR)(POS2D, POS2D, double**, int*);
+typedef double (*COST_FUNC_PTR)(POS2D, POS2D, double**);
 
 class RRTNode {
 

@@ -293,10 +293,7 @@ bool RRTstar::_contains( POS2D pos )
 }
 
 double RRTstar::_calculate_cost( POS2D& pos_a, POS2D& pos_b ) {
-    int dimension[2];
-    dimension[0] = _sampling_width;
-    dimension[1] = _sampling_height;
-    return _p_cost_func(pos_a, pos_b, _pp_cost_distribution, dimension);
+    return _p_cost_func(pos_a, pos_b, _pp_cost_distribution);
 }
 
 RRTNode* RRTstar::_create_new_node(POS2D pos) {

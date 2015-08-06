@@ -33,7 +33,7 @@ public:
     void load_path( Path* path );
     bool export_path( QString filename );
 
-    static double calc_dist( POS2D pos_a, POS2D pos_b, double** pp_distribution, int* p_dimension ) {
+    static double calc_dist( POS2D pos_a, POS2D pos_b, double** pp_distribution ) {
         double dist = 0.0;
         if (pos_a == pos_b) {
             return dist;
@@ -48,7 +48,7 @@ public:
         return dist;
     }
 
-    static double calc_cost( POS2D pos_a, POS2D pos_b, double** pp_distribution, int* p_dimension ) {
+    static double calc_cost( POS2D pos_a, POS2D pos_b, double** pp_distribution ) {
         double cost = 0.0;
         if ( pos_a == pos_b ) {
             return cost;
@@ -56,9 +56,6 @@ public:
         if( pp_distribution == NULL ) {
             return cost;
         }
-
-        int width = p_dimension[0];
-        int height = p_dimension[1];
 
         float x1 = pos_a[0];
         float y1 = pos_a[1];
