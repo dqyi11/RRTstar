@@ -53,7 +53,7 @@ public:
         if ( pos_a == pos_b ) {
             return cost;
         }
-        if( pp_distribution == NULL ){
+        if( pp_distribution == NULL ) {
             return cost;
         }
 

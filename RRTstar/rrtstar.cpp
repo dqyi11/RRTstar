@@ -43,14 +43,13 @@ RRTstar::RRTstar( int width, int height, int segment_length ) {
 
     _theta = 5;
 
+    _pp_cost_distribution = NULL;
+
     _pp_map_info = new int*[_sampling_width];
-    _pp_cost_distribution = new double*[_sampling_width];
     for(int i=0;i<_sampling_width;i++) {
         _pp_map_info[i] = new int[_sampling_height];
-        _pp_cost_distribution[i] = new double[_sampling_height];
         for(int j=0;j<_sampling_height;j++) {
             _pp_map_info[i][j] = 255;
-            _pp_cost_distribution[i][j] = 0.0;
         }
     }
 
@@ -73,9 +72,22 @@ RRTNode* RRTstar::init( POS2D start, POS2D goal, COST_FUNC_PTR p_func, double** 
     _goal = goal;
     _p_cost_func = p_func;
 
-    for(int i=0;i<_sampling_width;i++) {
-        for(int j=0;j<_sampling_height;j++) {
-            _pp_cost_distribution[i][j] = pp_cost_distribution[i][j];
+    if(pp_cost_distribution) {
+        if(_pp_cost_distribution == NULL) {
+            _pp_cost_distribution = new double*[_sampling_width];
+            for(int i=0;i<_sampling_width;i++) {
+                _pp_cost_distribution[i] = new double[_sampling_height];
+            }
+        }
+        for(int i=0;i<_sampling_width;i++) {
+            for(int j=0;j<_sampling_height;j++) {
+                _pp_cost_distribution[i][j] = pp_cost_distribution[i][j];
+            }
+        }
+    }
+    else {
+        if(_pp_cost_distribution) {
+            _pp_cost_distribution = NULL;
         }
     }
 
@@ -168,7 +180,6 @@ bool RRTstar::_is_obstacle_free( POS2D pos_a, POS2D pos_b ) {
                 return false;
             }
         }
-
     }
     else {
         double k = (double)x_dist/ y_dist;
@@ -436,7 +447,8 @@ void RRTstar::_attach_new_node(RRTNode* p_node_new, RRTNode* p_nearest_node, std
     for(std::list<RRTNode*>::iterator it=near_nodes.begin();it!=near_nodes.end();it++) {
         RRTNode* p_near_node = *it;
         if ( true == _is_obstacle_free( p_near_node->m_pos, p_node_new->m_pos ) ) {
-            double new_cost = p_near_node->m_cost + _calculate_cost( p_near_node->m_pos, p_node_new->m_pos );
+            double delta_cost = _calculate_cost( p_near_node->m_pos, p_node_new->m_pos );
+            double new_cost = p_near_node->m_cost + delta_cost;
             if ( new_cost < min_new_node_cost ) {
                 p_min_node = p_near_node;
                 min_new_node_cost = new_cost;
@@ -460,16 +472,17 @@ void RRTstar::_rewire_near_nodes(RRTNode* p_node_new, std::list<RRTNode*> near_n
         }
 
         if( true == _is_obstacle_free( p_node_new->m_pos, p_near_node->m_pos ) ) {
-            double temp_cost_from_new_node = p_node_new->m_cost + _calculate_cost( p_node_new->m_pos, p_near_node->m_pos );
+            double temp_delta_cost = _calculate_cost( p_node_new->m_pos, p_near_node->m_pos );
+            double temp_cost_from_new_node = p_node_new->m_cost + temp_delta_cost;
             if( temp_cost_from_new_node < p_near_node->m_cost ) {
-                double delta_cost = p_near_node->m_cost - temp_cost_from_new_node;
+                double min_delta_cost = p_near_node->m_cost - temp_cost_from_new_node;
                 RRTNode * p_parent_node = p_near_node->mp_parent;
                 bool removed = _remove_edge(p_parent_node, p_near_node);
                 if(removed) {
                     bool added = _add_edge(p_node_new, p_near_node);
                     if( added ) {
                         p_near_node->m_cost = temp_cost_from_new_node;
-                        _update_cost_to_children(p_near_node, delta_cost);
+                        _update_cost_to_children(p_near_node, min_delta_cost);
                     }
                 }
                 else {
