@@ -160,9 +160,10 @@ bool MainWindow::openMap(QString filename) {
         mpViz->m_PPInfo.m_map_width = mpMap->width();
         mpViz->m_PPInfo.m_map_height = mpMap->height();
         mpViz->setPixmap(*mpMap);
+        updateTitle();
+        return true;
     }
-
-    updateTitle();
+    return false;
 }
 
 void MainWindow::onLoadObj() {
