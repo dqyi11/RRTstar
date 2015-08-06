@@ -258,7 +258,7 @@ void MainWindow::updateTitle() {
 }
 
 void MainWindow::updateStatus() {
-    if(mpViz==NULL || mpRRTstar==NULL)     {
+    if(mpViz==NULL || mpRRTstar==NULL) {
         return;
     }
     if(mpStatusProgressBar) {

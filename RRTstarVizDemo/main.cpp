@@ -13,13 +13,13 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     MainWindow w;
     if(no_gui) {
-        std::cout << "NO GUI" << std::endl;
+        //std::cout << "NO GUI" << std::endl;
         if(w.setupPlanning(filename)) {
-            qDebug() << "file open";
+            qDebug() << "CONFIG FILE LOADED";
         }
         w.planPath();
         if(w.exportPaths()) {
-            qDebug() << "path exported";
+            qDebug() << "PATH EXPORTED";
         }
         return 0;
     }
