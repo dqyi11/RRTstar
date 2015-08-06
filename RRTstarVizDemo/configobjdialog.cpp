@@ -81,8 +81,7 @@ void ConfigObjDialog::onBtnAddClicked() {
    if (objFilename!="") {
        if(true==isCompatible(objFilename)) {
            if(mpParentWindow->mpViz) {
-               mpParentWindow->mpViz->m_PPInfo.m_objective_file = objFilename;
-               updateDisplay();
+               mpLineEditCost->setText(objFilename);
                repaint();
            }
        }
@@ -122,8 +121,7 @@ void ConfigObjDialog::updateConfiguration() {
         mpParentWindow->mpViz->m_PPInfo.m_min_dist_enabled=false;
     }
 
-    mpParentWindow->mpViz->m_PPInfo.m_objective_file;
-
+    mpParentWindow->mpViz->m_PPInfo.m_objective_file = mpLineEditCost->text();
     mpParentWindow->mpViz->m_PPInfo.m_max_iteration_num = mpLineEditIterationNum->text().toInt();
     mpParentWindow->mpViz->m_PPInfo.m_segment_length = mpLineEditSegmentLength->text().toDouble();
 }
