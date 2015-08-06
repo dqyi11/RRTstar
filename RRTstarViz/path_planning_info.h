@@ -60,60 +60,43 @@ public:
         int width = p_dimension[0];
         int height = p_dimension[1];
 
-        double x_dist = pos_a[0] - pos_b[0];
-        double y_dist = pos_a[1] - pos_b[1];
-        if ( fabs( x_dist ) > fabs( y_dist ) ) {
-            int start_x = 0, end_x = 0, start_y = 0, end_y = 0;
-            double k = y_dist / x_dist;
-            if ( pos_a[0] < pos_b[0] ) {
-                start_x = (int)floor( pos_a[0] );
-                end_x   = (int)floor( pos_b[0] );
-                start_y = (int)floor( pos_a[1] );
-                end_y   = (int)floor( pos_b[1]) ;
-            }
-            else {
-                start_x = (int)floor( pos_b[0] );
-                end_x   = (int)floor( pos_a[0] );
-                start_y = (int)floor( pos_b[1] );
-                end_y   = (int)floor( pos_a[1] );
-            }
-            for( int coord_x = start_x; coord_x < end_x; coord_x++ ) {
-                int coord_y = (int)floor( k*( coord_x-start_x )+start_y );
-                if ( coord_x < 0 || coord_x >= width || coord_y < 0 || coord_y >= height ) {
-                    continue;
-                }
-                double fitness_val = pp_distribution[coord_x][coord_y];
-                if( fitness_val < 0 ) {
-                    qWarning() << "Cost negative " << fitness_val;
-                }
-                cost += fitness_val;
-            }
+        float x1 = pos_a[0];
+        float y1 = pos_a[1];
+        float x2 = pos_b[0];
+        float y2 = pos_b[1];
+
+        const bool steep = (fabs(y2 - y1) > fabs(x2 - x1));
+        if (steep) {
+            std::swap(x1, y1);
+            std::swap(x2, y2);
         }
-        else {
-            int start_y = 0, end_y = 0, start_x = 0, end_x = 0;
-            double k = x_dist / y_dist;
-            if ( pos_a[0] < pos_b[0] ) {
-                start_y = (int)floor( pos_a[1] );
-                end_y   = (int)floor( pos_b[1] );
-                start_x = (int)floor( pos_a[0] );
-                end_x   = (int)floor( pos_b[0] );
+
+        if (x1 > x2) {
+            std::swap(x1, x2);
+            std::swap(y1, y2);
+        }
+
+        const float dx = x2 - x1;
+        const float dy = fabs(y2 - y1);
+
+        float error = dx / 2.0f;
+        const int ystep = (y1 < y2) ? 1 : -1;
+        int y = (int)y1;
+
+        const int maxX = (int)x2;
+
+        for(int x=(int)x1; x<maxX; x++) {
+            if(steep) {
+                cost += pp_distribution[y][x];
             }
             else {
-                start_y = (int)floor( pos_b[1] );
-                end_y   = (int)floor( pos_a[1] );
-                start_x = (int)floor( pos_b[0] );
-                end_x   = (int)floor( pos_a[0] );
+                cost += pp_distribution[x][y];
             }
-            for( int coord_y = start_y; coord_y < end_y; coord_y++ ) {
-                int coord_x = (int)floor( k*(coord_y-start_y)+start_x );
-                if ( coord_x < 0 || coord_x >= width || coord_y < 0 || coord_y >= height ) {
-                    continue;
-                }
-                double fitness_val = (double)pp_distribution[coord_x][coord_y];
-                if( fitness_val < 0 ) {
-                    qWarning() << "Cost negative " << fitness_val;
-                }
-                cost += fitness_val;
+
+            error -= dy;
+            if(error < 0) {
+                y += ystep;
+                error += dx;
             }
         }
 

@@ -35,7 +35,7 @@ public:
         double dist = 0;
         for (int i = 0; i != 2; ++i)
             dist += (d[i]-x.d[i])*(d[i]-x.d[i]);
-        return std::sqrt(dist);
+        return sqrt(dist);
     }
 
     value_type operator[](size_t const N) { return d[N]; }

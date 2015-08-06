@@ -25,13 +25,18 @@ void RRTstarViz::paintEvent( QPaintEvent * e ) {
         for( std::list<RRTNode*>::iterator it= mp_tree->get_nodes().begin(); it!=mp_tree->get_nodes().end();it++ ) {
             RRTNode* p_node = (*it);
             if(p_node) {
+                if(p_node->mp_parent) {
+                    painter.drawLine(QPoint(p_node->m_pos[0], p_node->m_pos[1]), QPoint(p_node->mp_parent->m_pos[0], p_node->mp_parent->m_pos[1]));
+                }
+
+                /*
                 for(std::list<RRTNode*>::iterator itc= p_node->m_child_nodes.begin(); itc!=p_node->m_child_nodes.end();itc++) {
                     RRTNode* p_child_node = (*itc);
                     if(p_child_node)
                     {
                         painter.drawLine(QPoint(p_node->m_pos[0], p_node->m_pos[1]), QPoint(p_child_node->m_pos[0], p_child_node->m_pos[1]));
                     }
-                }
+                }*/
             }
         }
 

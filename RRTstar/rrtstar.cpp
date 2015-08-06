@@ -160,46 +160,47 @@ bool RRTstar::_is_obstacle_free( POS2D pos_a, POS2D pos_b ) {
         return true;
     }
 
-    if ( fabs( x_dist ) > fabs( y_dist ) ) {
-        double k = (double)y_dist/ x_dist;
-        int start_x = 0, end_x = 0, start_y = 0;
-        if ( pos_a[0] < pos_b[0] ) {
-            start_x = pos_a[0];
-            end_x   = pos_b[0];
-            start_y = pos_a[1];
-        }
-        else {
-            start_x = pos_b[0];
-            end_x   = pos_a[0];
-            start_y = pos_b[1];
-        }
-        for ( int coord_x = start_x; coord_x < end_x + _obs_check_resolution; coord_x+=_obs_check_resolution ) {
-            int coordY = (int)(k*(coord_x-start_x)+start_y);
-            if ( coordY >= _sampling_height || coord_x >= _sampling_width ) break;
-            if ( _pp_map_info[coord_x][coordY] < OBSTACLE_THRESHOLD ) {
-                return false;
-            }
-        }
+    float x1 = pos_a[0];
+    float y1 = pos_a[1];
+    float x2 = pos_b[0];
+    float y2 = pos_b[1];
+
+    const bool steep = (fabs(y2 - y1) > fabs(x2 - x1));
+    if (steep) {
+        std::swap(x1, y1);
+        std::swap(x2, y2);
     }
-    else {
-        double k = (double)x_dist/ y_dist;
-        int start_y = 0, end_y = 0, start_x =0;
-        if ( pos_a[1] < pos_b[1] ) {
-            start_y = pos_a[1];
-            end_y   = pos_b[1];
-            start_x = pos_a[0];
-        }
-        else {
-            start_y = pos_b[1];
-            end_y   = pos_a[1];
-            start_x = pos_b[0];
-        }
-        for ( int coordY = start_y; coordY < end_y + _obs_check_resolution; coordY+=_obs_check_resolution ) {
-            int coordX = (int)(k*(coordY-start_y)+start_x);
-            if ( coordY >= _sampling_height || coordX >= _sampling_width ) break;
-            if ( _pp_map_info[coordX][coordY] < OBSTACLE_THRESHOLD ) {
+
+    if (x1 > x2) {
+        std::swap(x1, x2);
+        std::swap(y1, y2);
+    }
+
+    const float dx = x2 - x1;
+    const float dy = fabs(y2 - y1);
+
+    float error = dx / 2.0f;
+    const int ystep = (y1 < y2) ? 1 : -1;
+    int y = (int)y1;
+
+    const int maxX = (int)x2;
+
+    for(int x=(int)x1; x<maxX; x++) {
+        if(steep) {
+            if ( _pp_map_info[y][x] < OBSTACLE_THRESHOLD ) {
                 return false;
             }
+        }
+        else {
+            if ( _pp_map_info[x][y] < OBSTACLE_THRESHOLD ) {
+                return false;
+            }
+        }
+
+        error -= dy;
+        if(error < 0) {
+            y += ystep;
+            error += dx;
         }
     }
     return true;
@@ -268,7 +269,7 @@ std::list<KDNode2D> RRTstar::_find_near(POS2D pos) {
 
     int num_vertices = _p_kd_tree->size();
     int num_dimensions = 2;
-    _ball_radius = _range * pow( log((double)(num_vertices + 1.0))/((double)(num_vertices + 1.0)), 1.0/((double)num_dimensions) );
+    _ball_radius =  _theta * _range * pow( log((double)(num_vertices + 1.0))/((double)(num_vertices + 1.0)), 1.0/((double)num_dimensions) );
 
     _p_kd_tree->find_within_range( node, _ball_radius, std::back_inserter( near_list ) );
 
