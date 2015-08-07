@@ -150,7 +150,7 @@ bool RRTstar::_is_in_obstacle( POS2D pos ) {
 
 
 bool RRTstar::_is_obstacle_free( POS2D pos_a, POS2D pos_b ) {
-    if (pos_a == pos_b) {
+    if ( pos_a == pos_b ) {
         return true;
     }
     int x_dist = pos_a[0] - pos_b[0];
@@ -165,19 +165,19 @@ bool RRTstar::_is_obstacle_free( POS2D pos_a, POS2D pos_b ) {
     float x2 = pos_b[0];
     float y2 = pos_b[1];
 
-    const bool steep = (fabs(y2 - y1) > fabs(x2 - x1));
-    if (steep) {
-        std::swap(x1, y1);
-        std::swap(x2, y2);
+    const bool steep = ( fabs(y2 - y1) > fabs(x2 - x1) );
+    if ( steep ) {
+        std::swap( x1, y1 );
+        std::swap( x2, y2 );
     }
 
-    if (x1 > x2) {
-        std::swap(x1, x2);
-        std::swap(y1, y2);
+    if ( x1 > x2 ) {
+        std::swap( x1, x2 );
+        std::swap( y1, y2 );
     }
 
     const float dx = x2 - x1;
-    const float dy = fabs(y2 - y1);
+    const float dy = fabs( y2 - y1 );
 
     float error = dx / 2.0f;
     const int ystep = (y1 < y2) ? 1 : -1;
@@ -187,13 +187,17 @@ bool RRTstar::_is_obstacle_free( POS2D pos_a, POS2D pos_b ) {
 
     for(int x=(int)x1; x<maxX; x++) {
         if(steep) {
-            if ( _pp_map_info[y][x] < OBSTACLE_THRESHOLD ) {
-                return false;
+            if ( y >= 0 && y < _sampling_width && x >= 0 && x < _sampling_height ) {
+                if ( _pp_map_info[y][x] < OBSTACLE_THRESHOLD ) {
+                    return false;
+                }
             }
         }
         else {
-            if ( _pp_map_info[x][y] < OBSTACLE_THRESHOLD ) {
-                return false;
+            if ( y >= 0 && y < _sampling_width && x >= 0 && x < _sampling_height ) {
+                if ( _pp_map_info[x][y] < OBSTACLE_THRESHOLD ) {
+                    return false;
+                }
             }
         }
 
