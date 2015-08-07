@@ -42,8 +42,7 @@ MainWindow::~MainWindow() {
     }
 }
 
-void MainWindow::createMenuBar()
-{
+void MainWindow::createMenuBar() {
     mpFileMenu = menuBar()->addMenu("&File");
     mpFileMenu->addAction(mpOpenAction);
     mpFileMenu->addAction(mpSaveAction);
@@ -195,8 +194,7 @@ void MainWindow::onRun() {
     repaint();
 }
 
-void MainWindow::planPath()
-{
+void MainWindow::planPath() {
     if(mpRRTstar) {
         delete mpRRTstar;
         mpRRTstar = NULL;
@@ -207,7 +205,7 @@ void MainWindow::planPath()
     }
 
     mpViz->m_PPInfo.init_func_param();
-    QString msg = "RUNNING MORRF ... \n";
+    QString msg = "RUNNING RRTstar ... \n";
     msg += "SegmentLen( " + QString::number(mpViz->m_PPInfo.m_segment_length) + " ) \n";
     msg += "MaxIterationNum( " + QString::number(mpViz->m_PPInfo.m_max_iteration_num) + " ) \n";
     qDebug(msg.toStdString().c_str());

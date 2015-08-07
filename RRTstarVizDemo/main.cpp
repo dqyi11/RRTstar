@@ -2,8 +2,7 @@
 #include <QApplication>
 #include "mainwindow.h"
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     bool no_gui = false;
     QString filename;
     if(argc > 1) {
