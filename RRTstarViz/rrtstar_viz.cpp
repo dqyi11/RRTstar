@@ -76,7 +76,7 @@ void RRTstarViz::paintEvent( QPaintEvent * e ) {
 
 bool RRTstarViz::drawPath(QString filename) {
 
-    QPixmap pix(m_PPInfo.m_map_fullpath);
+    QPixmap pix(m_PPInfo.m_objective_file);
 
     std::cout << "DUMP PATH IMG " << pix.width() << " " << pix.height() << std::endl;
 
