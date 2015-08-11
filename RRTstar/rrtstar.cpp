@@ -187,14 +187,14 @@ bool RRTstar::_is_obstacle_free( POS2D pos_a, POS2D pos_b ) {
 
     for(int x=(int)x1; x<maxX; x++) {
         if(steep) {
-            if ( y >= 0 && y < _sampling_width && x >= 0 && x < _sampling_height ) {
+            if ( y>=0 && y<_sampling_width && x>=0 && x<_sampling_height ) {
                 if ( _pp_map_info[y][x] < OBSTACLE_THRESHOLD ) {
                     return false;
                 }
             }
         }
         else {
-            if ( y >= 0 && y < _sampling_width && x >= 0 && x < _sampling_height ) {
+            if ( x>=0 && x<_sampling_width && y>=0 && y<_sampling_height ) {
                 if ( _pp_map_info[x][y] < OBSTACLE_THRESHOLD ) {
                     return false;
                 }
@@ -297,7 +297,7 @@ bool RRTstar::_contains( POS2D pos )
 }
 
 double RRTstar::_calculate_cost( POS2D& pos_a, POS2D& pos_b ) {
-    return _p_cost_func(pos_a, pos_b, _pp_cost_distribution);
+    return _p_cost_func(pos_a, pos_b, _pp_cost_distribution, this);
 }
 
 RRTNode* RRTstar::_create_new_node(POS2D pos) {

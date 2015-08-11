@@ -33,7 +33,7 @@ public:
     void load_path( Path* path );
     bool export_path( QString filename );
 
-    static double calc_dist( POS2D pos_a, POS2D pos_b, double** pp_distribution ) {
+    static double calc_dist( POS2D pos_a, POS2D pos_b, double** pp_distribution, void* tree ) {
         double dist = 0.0;
         if (pos_a == pos_b) {
             return dist;
@@ -48,8 +48,9 @@ public:
         return dist;
     }
 
-    static double calc_cost( POS2D pos_a, POS2D pos_b, double** pp_distribution ) {
+    static double calc_cost( POS2D pos_a, POS2D pos_b, double** pp_distribution, void* tree ) {
         double cost = 0.0;
+        RRTstar* rrts = (RRTstar*)tree;
         if ( pos_a == pos_b ) {
             return cost;
         }
@@ -84,10 +85,14 @@ public:
 
         for(int x=(int)x1; x<maxX; x++) {
             if(steep) {
-                cost += pp_distribution[y][x];
+                if (y>=0 && y<rrts->get_sampling_width() && x>=0 && x<rrts->get_sampling_height()) {
+                    cost += pp_distribution[y][x];
+                }
             }
             else {
-                cost += pp_distribution[x][y];
+                if (x>=0 && x<rrts->get_sampling_width() && y>=0 && y<rrts->get_sampling_height()) {
+                    cost += pp_distribution[x][y];
+                }
             }
 
             error -= dy;
