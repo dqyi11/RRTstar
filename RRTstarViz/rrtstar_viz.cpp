@@ -19,7 +19,7 @@ void RRTstarViz::paintEvent( QPaintEvent * e ) {
 
         QPainter painter(this);
         QPen paintpen(QColor(0,255,0));
-        paintpen.setWidth(1);
+        paintpen.setWidth(2);
         painter.setPen(paintpen);
 
         for( std::list<RRTNode*>::iterator it= mp_tree->get_nodes().begin(); it!=mp_tree->get_nodes().end();it++ ) {
@@ -44,7 +44,7 @@ void RRTstarViz::paintEvent( QPaintEvent * e ) {
             Path * p = m_PPInfo.mp_found_path;
             QPainter painter(this);
             QPen paintpen(QColor(255,140,0));
-            paintpen.setWidth(2);
+            paintpen.setWidth(4);
             painter.setPen(paintpen);
 
             int point_num = p->m_way_points.size();
@@ -103,9 +103,26 @@ void RRTstarViz::drawPathOnMap(QPixmap& map) {
 
     if(point_num > 0) {
         for(int i=0;i<point_num-1;i++) {
-            painter.drawLine(QPoint(p->m_way_points[i][0], p->m_way_points[i][1]), QPoint(p->m_way_points[i+1][0], p->m_way_points[i+1][1]));
+            painter.drawLine( QPoint(p->m_way_points[i][0], p->m_way_points[i][1]), QPoint(p->m_way_points[i+1][0], p->m_way_points[i+1][1]) );
         }
     }
+
     painter.end();
+
+    QPainter startPainter(&map);
+    QPen paintpen1(QColor(255,0,0));
+    paintpen.setWidth(10);
+    startPainter.setPen(paintpen1);
+    startPainter.drawPoint( QPoint(p->m_way_points[0][0], p->m_way_points[0][1]) );
+    startPainter.end();
+
+    int lastIdx = p->m_way_points.size() - 1;
+    QPainter endPainter(&map);
+    QPen paintpen2(QColor(0,0,255));
+    paintpen.setWidth(10);
+    endPainter.setPen(paintpen2);
+    endPainter.drawPoint( QPoint(p->m_way_points[lastIdx][0], p->m_way_points[lastIdx][1]) );
+    endPainter.end();
+
 
 }

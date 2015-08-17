@@ -41,7 +41,7 @@ RRTstar::RRTstar( int width, int height, int segment_length ) {
     _current_iteration = 0;
     _segment_length = segment_length;
 
-    _theta = 5;
+    _theta = 10;
 
     _pp_cost_distribution = NULL;
 
