@@ -19,7 +19,7 @@ void RRTstarViz::paintEvent( QPaintEvent * e ) {
 
         QPainter painter(this);
         QPen paintpen(QColor(0,255,0));
-        paintpen.setWidth(2);
+        paintpen.setWidth(1);
         painter.setPen(paintpen);
 
         for( std::list<RRTNode*>::iterator it= mp_tree->get_nodes().begin(); it!=mp_tree->get_nodes().end();it++ ) {
@@ -44,7 +44,7 @@ void RRTstarViz::paintEvent( QPaintEvent * e ) {
             Path * p = m_PPInfo.mp_found_path;
             QPainter painter(this);
             QPen paintpen(QColor(255,140,0));
-            paintpen.setWidth(4);
+            paintpen.setWidth(22);
             painter.setPen(paintpen);
 
             int point_num = p->m_way_points.size();
