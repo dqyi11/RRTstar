@@ -44,7 +44,7 @@ void RRTstarViz::paintEvent( QPaintEvent * e ) {
             Path * p = m_PPInfo.mp_found_path;
             QPainter painter(this);
             QPen paintpen(QColor(255,140,0));
-            paintpen.setWidth(22);
+            paintpen.setWidth(2);
             painter.setPen(paintpen);
 
             int point_num = p->m_way_points.size();

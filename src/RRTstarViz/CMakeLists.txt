@@ -12,10 +12,10 @@ add_library(${LIB} SHARED
            )
 
 include_directories(
-                    ${Qt5Widgets_INCLUDE_DIRS}
                    )
 
 target_link_libraries(${LIB} 
                       rrtstar
-                      ${Qt5Widgets_LIBRARIES}
+                      ${LIBXML2_LIBRARIES}
+                      ${QT_LIBRARIES}
                      )

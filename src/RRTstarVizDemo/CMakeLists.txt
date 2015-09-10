@@ -10,13 +10,10 @@ add_executable(rrtstar-viz-demo
                )
 
 include_directories(
-                   ${Qt5Widgets_INCLUDE_DIRS}
-                   ${Qt5Core_INCLUDE_DIRS}
                    )
 
 target_link_libraries(rrtstar-viz-demo
                       rrtstar
                       rrtstar-viz
-                      ${Qt5Widgets_LIBRARIES}
-                      ${Qt5Core_LIBRARIES}
+                      ${QT_LIBRARIES}
                      )

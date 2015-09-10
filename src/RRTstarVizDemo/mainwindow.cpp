@@ -89,7 +89,7 @@ void MainWindow::createActions()
 void MainWindow::onOpen()
 {
     QString tempFilename = QFileDialog::getOpenFileName(this,
-             tr("Open File"), "./", tr("Json Files (*.json)"));
+             tr("Open File"), "./", tr("XML Files (*.xml)"));
 
     if(setupPlanning(tempFilename)) {
         repaint();
@@ -109,7 +109,7 @@ bool MainWindow::setupPlanning(QString filename) {
 }
 
 void MainWindow::onSave() {
-    QString tempFilename = QFileDialog::getSaveFileName(this, tr("Save File"), "./", tr("Json Files (*.json)"));
+    QString tempFilename = QFileDialog::getSaveFileName(this, tr("Save File"), "./", tr("XML Files (*.xml)"));
 
     if(mpViz) {
         mpViz->m_PPInfo.save_to_file(tempFilename);
